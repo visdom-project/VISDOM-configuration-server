@@ -7,9 +7,10 @@ const app = express();
 // routers come here
 
 const mongoose = require("mongoose");
+
 mongoose.connect(configs.DB_URL)
     .then(() => console.log("connected to MongoDB"))
-    .catch((err) => console.log("error connecting to MongoDB", err.message));
+    .catch((err) => console.log("error connecting to MongoDB:", err.message));
 
 const http = require("http").createServer(app);
 

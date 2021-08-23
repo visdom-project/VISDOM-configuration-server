@@ -32,9 +32,13 @@ router.post("/:visId", async (req, res) => {
 });
 
 router.get("/:visId/", async (req, res) => {
-    const {visId} = req.params;
+    const { visId } = req.params;
     const configName = req.get("config-name");
+    
     const vis = await DB.findOne({microfrontendName: visId});
+    if (!configName) {
+        return res.status(200).json(vis.configurations.map(doc => doc.name));
+    }
     const configurations = vis.configurations;
     const config = configurations.filter(configuration => configuration.name === configName);
     if (config.length === 0){
@@ -65,11 +69,9 @@ router.delete("/:visId", async (req, res) => {
 })
 
 router.delete("/all/:visId", async (req, res) => {
-    console.log("DELETE ALL");
     const x_key = req.get("x-api-key");
     
     if (x_key !== X_KEY){
-        console.log(x_key);
         return res.status(400).json({error: "No access right"});
     }
     const visId = req.params.visId;
