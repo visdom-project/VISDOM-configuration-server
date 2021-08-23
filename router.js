@@ -37,7 +37,7 @@ router.get("/:visId/", async (req, res) => {
     
     const vis = await DB.findOne({microfrontendName: visId});
     if (!configName) {
-        return !vis ? [] : res.status(200).json(vis.configurations.map(doc => doc.name));
+        return !vis ? res.status(200).json([]) : res.status(200).json(vis.configurations.map(doc => doc.name));
     }
     const configurations = vis.configurations;
     const config = configurations.filter(configuration => configuration.name === configName);
