@@ -3,5 +3,5 @@ services:
   configuration-server:
     build:
       dockerfile: Dockerfile
-      port:
+      ports:
         - "8898:8000"
