@@ -19,7 +19,7 @@ router.post("/:visId", async (req, res) => {
         }
         catch (err) {
             console.log(err);
-            return res.status(400).send({error: "bad microfrontend name"});
+            return res.status(404).send({error: "bad microfrontend name"});
         }
     }
     
@@ -30,6 +30,33 @@ router.post("/:visId", async (req, res) => {
     await vis.save();
     res.status(201).json({name: name});
 });
+
+router.put("/:visId", async (req, res) => {
+    const visId = req.params.visId;
+    const vis = await DB.findOne({microfrontendName: visId});
+    const { name, config } = req.body;
+
+    if (!config || !name){
+        return res.status(400).send({error: "Not found parameters"});
+    }
+
+    if (!vis) {
+        return res.status(404).send({error: "bad microfrontend name"});
+    }
+    const index = vis.configurations.findIndex(config => config.name === name);
+    if (index !== -1) {
+        try {
+            vis.configurations[index].config = config;
+            await vis.save();
+        }
+        catch (err) {
+            console.log("ERROR in modify data", err);
+        }
+        return res.status(200).json({name: name});
+    }    
+    return res.status(404).send({error: "Not found configuration"});
+});
+
 
 router.get("/:visId/", async (req, res) => {
     const { visId } = req.params;
@@ -50,6 +77,7 @@ router.get("/:visId/", async (req, res) => {
 
 
 router.delete("/:visId", async (req, res) => {
+    console.log("DELETE 1");
     const { visId } = req.params;
     const x_key = req.get("x-api-key");
     const configName = req.get("config-name");
@@ -69,6 +97,7 @@ router.delete("/:visId", async (req, res) => {
 })
 
 router.delete("/all/:visId", async (req, res) => {
+    console.log("DELETE ALL");
     const x_key = req.get("x-api-key");
     
     if (x_key !== X_KEY){

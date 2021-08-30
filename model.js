@@ -21,7 +21,7 @@ const configurationSchema = mongoose.Schema({
 const DBSchema = mongoose.Schema({
     microfrontendName: {
         type: String,
-        enum: ["ekgview", "radarview", "rectanglemappingview"]
+        enum: ["ekgview", "radarview", "rectanglemappingview", "myview"]
     },
     configurations: {
         type : [configurationSchema]
